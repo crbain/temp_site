@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="CRB Subsea — AUV operations, mission delivery, and subsea engineering expertise." />
+  <title>CRB Subsea</title>
+
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel:#101722;
+      --text:#e7eef7;
+      --muted:#a7b3c2;
+      --brand:#78c24a;
+      --line:rgba(255,255,255,.08);
+      --radius:18px;
+      --max:1100px;
+      --sans: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(900px 500px at 15% -10%, rgba(120,194,74,.18), transparent 60%),
+        linear-gradient(180deg,#070a0f,var(--bg) 40%,#070a0f);
+    }
+
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:var(--max);margin:auto;padding:22px 18px 60px}
+
+    header{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 18px;margin:0 -18px;
+      position:sticky;top:0;z-index:10;
+      background:rgba(11,15,20,.75);backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+
+    .brand{display:flex;gap:12px;align-items:center}
+    .brand img{height:36px}
+    .brand b{letter-spacing:.3px}
+    .brand span{font-size:12px;color:var(--muted)}
+
+    nav{display:flex;gap:14px}
+    nav a{color:var(--muted);padding:6px 8px;border-radius:10px}
+    nav a:hover{color:var(--text)}
+
+    .btn{
+      padding:10px 14px;border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+    }
+    .btn.primary{
+      background:linear-gradient(180deg,#7ac94c,#5aa83a);
+      color:#08110a;font-weight:700;border:none;
+    }
+
+    .hero{
+      display:grid;grid-template-columns:1.2fr .8fr;
+      gap:22px;padding:40px 0;
+    }
+
+    .card{
+      background:linear-gradient(180deg,rgba(16,23,34,.9),rgba(10,14,20,.9));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:26px;
+    }
+
+    h1{
+      font-size:clamp(28px,3.2vw,44px);
+      line-height:1.1;margin:10px 0 12px;
+    }
+    h2{font-size:18px;margin:0}
+    h3{font-size:15px;margin:0 0 8px}
+    p{color:var(--muted);line-height:1.6}
+
+    .badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .badge{
+      font-family:var(--mono);
+      font-size:12px;padding:7px 10px;
+      border-radius:999px;border:1px solid var(--line);
+    }
+
+    section{margin-top:32px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+
+    footer{
+      margin-top:36px;padding-top:16px;
+      border-top:1px solid var(--line);
+      font-size:13px;color:var(--muted);
+      display:flex;justify-content:space-between;flex-wrap:wrap;
+    }
+
+    @media(max-width:900px){
+      .hero,.grid{grid-template-columns:1fr}
+      nav{display:none}
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brand">
+    <img src="logo.png" alt="CRB logo">
+    <div>
+      <b>CRB Subsea</b><br>
+      <span>AUV operations • mission delivery • subsea engineering</span>
+    </div>
+  </div>
+  <nav>
+    <a href="#work">Work</a>
+    <a href="#tools">Tools</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <a class="btn primary" href="#contact">Consulting</a>
+</header>
+
+<main class="hero">
+  <div class="card">
+    <h1>AUV mission tooling, delivery workflows, and field-proven experience.</h1>
+
+    <p>
+      With over <strong>20 years of offshore survey and subsea experience</strong>,
+      I specialise in the deployment, supervision, and technical management of
+      autonomous underwater vehicles (AUVs), with a strong focus on
+      <strong>Kongsberg HUGIN platforms</strong>.
+    </p>
+
+    <p>
+      I build practical tools and workflows around real operations—mission planning,
+      navigation review, QA, and export-ready deliverables—grounded in what actually
+      works offshore.
+    </p>
+
+    <div class="badges">
+      <span class="badge">AUV mission planning & QA</span>
+      <span class="badge">HUGIN platforms</span>
+      <span class="badge">DXF / SHP / MP deliverables</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Professional profile</h3>
+    <p>
+      I’ve led AUV operations globally across <strong>energy, telecom, environmental,
+      and geophysical sectors</strong>, covering the full lifecycle from system
+      integration and mission planning to offshore execution, fault diagnostics,
+      upgrades, and team leadership.
+    </p>
+    <p>
+      I work closely with both manufacturers and clients, bridging engineering detail
+      with operational reality. Whether on deck or in the office, I bring a
+      <strong>hands-on, solutions-driven mindset</strong> to every mission.
+    </p>
+  </div>
+</main>
+
+<section id="work">
+  <h2>Selected experience</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Mission delivery & supervision</h3>
+      <p>
+        End-to-end responsibility for AUV operations, execution strategy,
+        risk mitigation, and offshore supervision.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Navigation review & QA</h3>
+      <p>
+        Planned vs actual analysis, heading and timing checks, gap/overlap
+        detection, and defensible outputs.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Operational tooling</h3>
+      <p>
+        Purpose-built desktop tools and QGIS plugins to reduce friction,
+        speed up QA, and standardise deliverables.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="tools">
+  <h2>Tools & applications</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Mission Explorer</h3>
+      <p>
+        Desktop application for browsing missions, plotting tracks, reviewing logs,
+        and exporting DXF/Excel outputs efficiently.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Mission Planner</h3>
+      <p>
+        QGIS-based mission planning tools for survey lines, turns, offsets,
+        launch geometry, and clean MP export.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Utilities & automation</h3>
+      <p>
+        Batch processing, converters, QA scripts, and workflow glue built
+        around real-world subsea operations.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <h2>Consulting & collaboration</h2>
+  <div class="card">
+    <p>
+      I’m always open to new challenges, collaborations, and consulting roles
+      in <strong>subsea technology, autonomy, and marine robotics</strong>.
+    </p>
+    <p>
+      Engagements range from short advisory roles to hands-on operational
+      and tooling support.
+    </p>
+    <p>
+      <strong>Email:</strong> <code>hello@crbsubsea.com</code>
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div>© <span id="y"></span> CRB Subsea</div>
+  <div style="font-family:var(--mono)">Built for real offshore workflows</div>
+</footer>
+
+</div>
+
+<script>
+  document.getElementById("y").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

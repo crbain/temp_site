@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="CRB Subsea — offshore delivery, AUV operations, and subsea engineering expertise." />
+  <title>CRB Subsea</title>
+
+  <style>
+	:root{
+	  /* Depth background */
+	  --bg0:#040a08;      /* deep green-black */
+	  --bg1:#061612;      /* abyssal green */
+	  --bg2:#0a2a22;      /* deep teal-green */
+
+	  /* Panels */
+	  --panel:rgba(8,24,20,.82);
+	  --panel2:rgba(6,18,15,.82);
+
+	  /* Text */
+	  --text:#e9f5f1;
+	  --muted:#b4cec4;
+
+	  /* Brand (logo-driven) */
+	  --brand:#78c24a;    /* YOUR logo green */
+	  --brand2:#5aa83a;   /* darker companion */
+
+	  --line:rgba(255,255,255,.10);
+	  --radius:18px;
+	  --max:1100px;
+	  --sans: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+	  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	}
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+	body{
+	  margin:0;
+	  font-family:var(--sans);
+	  color:var(--text);
+	  background:
+		radial-gradient(1100px 600px at 20% -10%, rgba(120,194,74,.18), transparent 60%),
+		radial-gradient(900px 500px at 85% 0%, rgba(90,168,58,.14), transparent 55%),
+		linear-gradient(180deg,var(--bg0), var(--bg1) 35%, var(--bg2) 70%, var(--bg0));
+	  overflow-x:hidden;
+	}
+
+
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:var(--max);margin:auto;padding:22px 18px 60px;position:relative;z-index:2}
+
+    /* Ocean atmosphere layers */
+    .ocean{
+      position:fixed;inset:0;pointer-events:none;z-index:0;
+    }
+    /* light rays */
+    .ocean::before{
+      content:"";
+      position:absolute;inset:-20%;
+      background:
+        repeating-linear-gradient(115deg,
+		  rgba(120,194,74,.14) 0px,
+		  rgba(120,194,74,0) 60px,
+		  rgba(120,194,74,0) 120px);
+
+      opacity:.22;
+      mix-blend-mode:screen;
+      transform:translateY(-6%) rotate(-2deg);
+      filter:blur(1px);
+      animation:rays 18s ease-in-out infinite alternate;
+    }
+    @keyframes rays{
+      0%{transform:translateY(-7%) translateX(-2%) rotate(-2deg);opacity:.18}
+      100%{transform:translateY(-2%) translateX(2%) rotate(-2deg);opacity:.26}
+    }
+
+    /* caustics shimmer */
+    .ocean::after{
+      content:"";
+      position:absolute;inset:0;
+      background:
+		radial-gradient(closest-side at 20% 30%, rgba(120,194,74,.14), transparent 55%),
+		radial-gradient(closest-side at 80% 25%, rgba(90,168,58,.12), transparent 55%),
+
+        radial-gradient(closest-side at 45% 75%, rgba(120,220,255,.08), transparent 60%),
+        conic-gradient(from 180deg at 50% 50%,
+          rgba(255,255,255,.05),
+          rgba(255,255,255,0),
+          rgba(255,255,255,.04),
+          rgba(255,255,255,0),
+          rgba(255,255,255,.03));
+      opacity:.55;
+      filter:blur(10px) saturate(120%);
+      animation:caustics 14s linear infinite;
+      mix-blend-mode:overlay;
+    }
+    @keyframes caustics{
+      0%{transform:translate3d(-2%,0,0) scale(1.05) rotate(0deg)}
+      50%{transform:translate3d(2%,-1%,0) scale(1.08) rotate(6deg)}
+      100%{transform:translate3d(-2%,0,0) scale(1.05) rotate(12deg)}
+    }
+
+    /* subtle bubbles */
+    .bubbles{
+      position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.5;
+      background:
+        radial-gradient(circle at 12% 92%, rgba(233,242,251,.18) 0 2px, transparent 3px),
+        radial-gradient(circle at 22% 105%, rgba(233,242,251,.14) 0 1.5px, transparent 3px),
+        radial-gradient(circle at 38% 98%, rgba(233,242,251,.12) 0 2px, transparent 3px),
+        radial-gradient(circle at 58% 110%, rgba(233,242,251,.10) 0 1.5px, transparent 3px),
+        radial-gradient(circle at 76% 95%, rgba(233,242,251,.14) 0 2px, transparent 3px),
+        radial-gradient(circle at 88% 108%, rgba(233,242,251,.10) 0 1.5px, transparent 3px);
+      animation:bubbles 9s ease-in-out infinite;
+      filter:blur(.2px);
+    }
+    @keyframes bubbles{
+      0%{transform:translateY(0)}
+      50%{transform:translateY(-28px)}
+      100%{transform:translateY(0)}
+    }
+
+	header{
+	  width:100%;
+	  position:sticky;
+	  top:0;
+	  z-index:10;
+	  background:rgba(4,10,18,.62);
+	  backdrop-filter:blur(12px);
+	  border-bottom:1px solid var(--line);
+	}
+	
+	.header-inner{
+	  max-width:var(--max);
+	  margin:auto;
+	  padding:14px 18px;
+	  display:flex;
+	  align-items:center;
+	  justify-content:space-between;
+	}
+
+
+    .brand{display:flex;gap:12px;align-items:center}
+    .brand img{height:192px}
+	.brand b{
+	  letter-spacing:.4px;
+	  font-size:28px;
+	}
+
+	.brand span{
+	  font-size:14px;
+	  color:var(--muted);
+	}
+
+
+    nav{display:flex;gap:14px}
+    nav a{color:var(--muted);padding:6px 8px;border-radius:10px}
+    nav a:hover{color:var(--text);background:rgba(255,255,255,.04)}
+
+    .btn{
+      padding:10px 14px;border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+    }
+	.btn.primary{
+	  background:linear-gradient(180deg,var(--brand), var(--brand2));
+	  color:#08110a;
+	  font-weight:800;
+	  border:none;
+	  box-shadow:0 10px 26px rgba(120,194,74,.18);
+	}
+
+
+    .hero{
+      display:grid;grid-template-columns:1.2fr .8fr;
+      gap:22px;padding:42px 0;
+    }
+
+    .card{
+      background:linear-gradient(180deg,var(--panel), var(--panel2));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:26px;
+      box-shadow:0 18px 55px rgba(0,0,0,.25);
+      position:relative;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute;inset:-1px;
+      background:radial-gradient(800px 220px at 20% 0%, rgba(68,211,199,.10), transparent 55%),
+                 radial-gradient(700px 200px at 85% 5%, rgba(121,227,166,.08), transparent 55%);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .card > *{position:relative;z-index:1}
+
+    h1{
+      font-size:clamp(34px,4.2vw,56px);
+      line-height:1.08;margin:10px 0 12px;
+      letter-spacing:.3px;
+    }
+    h2{font-size:18px;margin:0}
+    h3{font-size:15px;margin:0 0 8px}
+    p{color:var(--muted);line-height:1.65}
+
+    .badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .badge{
+      font-family:var(--mono);
+      font-size:12px;padding:7px 10px;
+      border-radius:999px;border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+    }
+
+    section{margin-top:34px}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+
+    footer{
+      margin-top:38px;padding-top:16px;
+      border-top:1px solid var(--line);
+      font-size:13px;color:var(--muted);
+      display:flex;justify-content:space-between;flex-wrap:wrap;
+    }
+
+    /* accessibility: reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      .ocean::before,.ocean::after,.bubbles{animation:none}
+    }
+
+    @media(max-width:900px){
+      .hero,.grid{grid-template-columns:1fr}
+      nav{display:none}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="ocean" aria-hidden="true"></div>
+  <div class="bubbles" aria-hidden="true"></div>
+  
+  	<header>
+	  <div class="header-inner">
+		<div class="brand">
+		  <img src="logo.png" alt="CRB logo">
+
+		</div>
+
+		<nav>
+		  <a href="#work">Work</a>
+		  <a href="#contact">Contact</a>
+		</nav>
+
+		<a class="btn primary" href="#contact">Contact</a>
+	  </div>
+	</header>
+
+  <div class="wrap">
+
+    <main class="hero">
+      <div class="card">
+        <h1>Subsea operations, autonomy, and offshore delivery.</h1>
+
+        <p>
+          With over <strong>20 years of offshore survey and subsea experience</strong>,
+          I specialise in the deployment, supervision, and technical management of
+          autonomous underwater vehicles (AUVs), with a strong focus on
+          <strong>Kongsberg HUGIN platforms</strong>.
+        </p>
+
+        <p>
+          My work focuses on practical offshore execution — mission planning,
+          navigation review, quality assurance, and delivery of defensible subsea
+          survey results, grounded in what actually works offshore.
+        </p>
+
+        <div class="badges">
+          <span class="badge">AUV operations &amp; supervision</span>
+          <span class="badge">Subsea survey delivery</span>
+          <span class="badge">Offshore QA &amp; review</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Professional profile</h3>
+        <p>
+          I’ve led AUV operations globally across <strong>energy, telecom, environmental,
+          and geophysical sectors</strong>, covering the full lifecycle from system
+          integration and mission planning to offshore execution, fault diagnostics,
+          upgrades, and team leadership.
+        </p>
+        <p>
+          I work closely with both manufacturers and clients, bridging engineering detail
+          with operational reality. Whether on deck or in the office, I bring a
+          <strong>hands-on, solutions-driven mindset</strong> to every mission.
+        </p>
+      </div>
+    </main>
+
+    <section id="work">
+      <h2>Selected experience</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Mission delivery &amp; supervision</h3>
+          <p>
+            End-to-end responsibility for AUV operations, execution strategy,
+            risk mitigation, and offshore supervision.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Operational support &amp; optimisation</h3>
+          <p>
+            Operational optimisation, workflow streamlining, and technical support
+            to improve reliability, efficiency, and offshore decision-making.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <div class="card">
+        <p>
+          I’m open to consulting and collaboration in <strong>subsea technology,
+          autonomy, and marine robotics</strong>.
+        </p>
+        <p>
+          <strong>Email:</strong> <code>crbain@hotmail.com</code>
+        </p>
+      </div>
+    </section>
+
+    <footer>
+      <div>© <span id="y"></span> CRB Subsea</div>
+      <div style="font-family:var(--mono)">Grounded in real offshore operations</div>
+    </footer>
+
+  </div>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

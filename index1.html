@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="CRB Subsea — AUV mission tools, utilities, and field experience." />
+  <title>CRB Subsea</title>
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel:#101722;
+      --panel2:#0f1620;
+      --text:#e7eef7;
+      --muted:#a7b3c2;
+      --brand:#78c24a;
+      --brand2:#5aa83a;
+      --line:rgba(255,255,255,.08);
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+      --radius: 18px;
+      --max: 1100px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(900px 500px at 20% -10%, rgba(120,194,74,.20), transparent 60%),
+        radial-gradient(700px 400px at 90% 10%, rgba(120,194,74,.12), transparent 55%),
+        linear-gradient(180deg, #070a0f, var(--bg) 40%, #070a0f);
+      overflow-x:hidden;
+    }
+    a{ color:inherit; text-decoration:none; }
+    .wrap{ max-width:var(--max); margin:0 auto; padding: 22px 18px 70px; }
+
+    /* Top bar */
+    .top{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:18px;
+      position:sticky; top:0;
+      padding:14px 18px;
+      margin: 0 -18px;
+      background: rgba(11,15,20,.70);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--line);
+      z-index: 50;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+      min-width: 210px;
+    }
+    .brand img{
+      height:34px; width:auto;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,.35));
+    }
+    .brand .name{
+      display:flex; flex-direction:column; line-height:1.1;
+    }
+    .brand .name b{ letter-spacing:.3px; }
+    .brand .name span{ font-size:12px; color:var(--muted); }
+
+    nav{
+      display:flex; gap:14px; align-items:center; flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    nav a{
+      padding:8px 10px;
+      border-radius: 12px;
+      color: var(--muted);
+      border:1px solid transparent;
+    }
+    nav a:hover{
+      color: var(--text);
+      border-color: var(--line);
+      background: rgba(255,255,255,.03);
+    }
+
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center;
+      gap:10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      box-shadow: none;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease;
+      cursor:pointer;
+      user-select:none;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.05);
+      border-color: rgba(120,194,74,.35);
+    }
+    .btn.primary{
+      background: linear-gradient(180deg, rgba(120,194,74,.95), rgba(90,168,58,.95));
+      border-color: rgba(120,194,74,.55);
+      color: #08110a;
+      font-weight: 700;
+      box-shadow: 0 18px 35px rgba(120,194,74,.20);
+    }
+    .btn.primary:hover{ transform: translateY(-1px); }
+
+    /* Hero */
+    .hero{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 22px;
+      padding: 36px 0 10px;
+      align-items: stretch;
+    }
+    .card{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(16,23,34,.85), rgba(10,14,20,.85));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .hero-main{ padding: 26px 24px 22px; position:relative; overflow:hidden; }
+    .kicker{
+      font-family: var(--mono);
+      font-size: 12px;
+      color: rgba(120,194,74,.95);
+      letter-spacing:.12em;
+      text-transform: uppercase;
+    }
+    h1{
+      margin: 10px 0 10px;
+      font-size: clamp(28px, 3.2vw, 44px);
+      letter-spacing: -0.02em;
+      line-height: 1.08;
+    }
+    .lead{
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.55;
+      max-width: 62ch;
+    }
+    .hero-actions{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top: 18px;
+    }
+    .hero-badges{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top: 16px;
+    }
+    .badge{
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      color: rgba(231,238,247,.92);
+    }
+    .badge strong{ color: rgba(120,194,74,.95); font-weight:700; }
+    .glow{
+      position:absolute;
+      inset:-120px -140px auto auto;
+      width: 360px; height: 360px;
+      background: radial-gradient(circle at 30% 30%, rgba(120,194,74,.35), transparent 62%);
+      filter: blur(18px);
+      pointer-events:none;
+    }
+
+    /* Side panel */
+    .hero-side{ padding: 18px; display:flex; flex-direction:column; gap:12px; }
+    .mini{
+      padding: 14px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.02);
+    }
+    .mini h3{ margin:0 0 6px; font-size: 14px; letter-spacing:.2px; }
+    .mini p{ margin:0; color:var(--muted); font-size: 13px; line-height: 1.5; }
+    .mini code{ font-family: var(--mono); font-size: 12px; color: rgba(120,194,74,.95); }
+
+    /* Sections */
+    section{ margin-top: 26px; }
+    .section-head{
+      display:flex; align-items:end; justify-content:space-between;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+    .section-head h2{
+      margin:0;
+      font-size: 18px;
+      letter-spacing:.2px;
+    }
+    .section-head p{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
+      max-width: 65ch;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .tile{
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(15,22,32,.72), rgba(9,12,18,.72));
+      box-shadow: 0 14px 30px rgba(0,0,0,.35);
+      min-height: 140px;
+    }
+    .tile .topline{
+      display:flex; align-items:center; justify-content:space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .pill{
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(120,194,74,.28);
+      color: rgba(120,194,74,.95);
+      background: rgba(120,194,74,.08);
+      white-space:nowrap;
+    }
+    .tile h3{ margin:0 0 8px; font-size: 15px; }
+    .tile p{ margin:0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .tile .links{ margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap; }
+    .link{
+      font-size: 13px;
+      color: rgba(231,238,247,.92);
+      border-bottom: 1px solid rgba(120,194,74,.35);
+      padding-bottom: 2px;
+    }
+    .link:hover{ color: #fff; border-bottom-color: rgba(120,194,74,.75); }
+
+    /* Footer */
+    footer{
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      display:flex;
+      gap: 12px;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+
+    /* Responsive */
+    @media (max-width: 920px){
+      .hero{ grid-template-columns: 1fr; }
+      .grid{ grid-template-columns: 1fr; }
+      nav{ display:none; }
+      .brand{ min-width:auto; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <header class="top">
+      <a class="brand" href="#top">
+        <!-- Put your logo file next to this HTML and name it logo.png -->
+        <img src="logo.png" alt="CRB logo" />
+        <div class="name">
+          <b>CRB Subsea</b>
+          <span>AUV tools • mission utilities • field notes</span>
+        </div>
+      </a>
+
+      <nav>
+        <a href="#tools">Tools</a>
+        <a href="#experience">Experience</a>
+        <a href="#apps">Apps</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div style="display:flex; gap:10px; align-items:center;">
+        <a class="btn" href="#contact">Get in touch</a>
+        <a class="btn primary" href="#tools">Explore tools</a>
+      </div>
+    </header>
+
+    <main id="top" class="hero">
+      <div class="card hero-main">
+        <div class="glow"></div>
+        <div class="kicker">CRB • Subsea Engineering</div>
+        <h1>AUV mission tools and practical subsea experience — in one place.</h1>
+        <p class="lead">
+          CRB Subsea is a home for the apps, utilities, and workflows built around real AUV operations:
+          planning, tracking, navigation review, mission outputs, and post-dive sanity checks.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn primary" href="#apps">View apps</a>
+          <a class="btn" href="#experience">Read field notes</a>
+          <a class="btn" href="#contact">Work with me</a>
+        </div>
+
+        <div class="hero-badges">
+          <div class="badge"><strong>Focus:</strong> AUV navigation, mission planning, QA</div>
+          <div class="badge"><strong>Style:</strong> dark UI, fast workflows</div>
+          <div class="badge"><strong>Output:</strong> DXF / SHP / MP / reports</div>
+        </div>
+      </div>
+
+      <aside class="card hero-side">
+        <div class="mini">
+          <h3>Tooling philosophy</h3>
+          <p>
+            Ship-ready utilities that reduce clicks, make QA obvious, and export clean deliverables.
+          </p>
+        </div>
+        <div class="mini">
+          <h3>What you’ll find here</h3>
+          <p>
+            <code>Mission Explorer</code>, planners, trackers, viewers, data converters, and workflow notes.
+          </p>
+        </div>
+        <div class="mini">
+          <h3>Status</h3>
+          <p>
+            Landing page first — content and downloads can be added progressively as you publish.
+          </p>
+        </div>
+      </aside>
+    </main>
+
+    <section id="tools">
+      <div class="section-head">
+        <h2>Tools</h2>
+        <p>Small, focused apps that solve real mission annoyances: preview, validate, export, repeat.</p>
+      </div>
+
+      <div class="grid">
+        <div class="tile">
+          <div class="topline">
+            <h3>Mission Planning</h3>
+            <span class="pill">QGIS • MP export</span>
+          </div>
+          <p>Generate survey lines, turns, racetrack sequencing, launch geometry, and clean mission outputs.</p>
+          <div class="links">
+            <a class="link" href="#contact">Request demo</a>
+          </div>
+        </div>
+
+        <div class="tile">
+          <div class="topline">
+            <h3>Navigation Review</h3>
+            <span class="pill">Track QA</span>
+          </div>
+          <p>Overlay planned vs actual tracks, review mission logs, compute distances, and export deliverables.</p>
+          <div class="links">
+            <a class="link" href="#contact">Get access</a>
+          </div>
+        </div>
+
+        <div class="tile">
+          <div class="topline">
+            <h3>Post-Dive Utilities</h3>
+            <span class="pill">DXF / SHP / CSV</span>
+          </div>
+          <p>Fast conversions, batch processing, mission summaries, and sanity checks that save hours.</p>
+          <div class="links">
+            <a class="link" href="#contact">See examples</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience">
+      <div class="section-head">
+        <h2>Experience</h2>
+        <p>Short writeups: what worked offshore, what didn’t, and what I now automate by default.</p>
+      </div>
+
+      <div class="grid">
+        <div class="tile">
+          <div class="topline">
+            <h3>Mission structure that exports clean</h3>
+            <span class="pill">Field notes</span>
+          </div>
+          <p>Patterns for segment attributes, naming, and sequencing so deliverables are predictable.</p>
+          <div class="links">
+            <a class="link" href="#">Coming soon</a>
+          </div>
+        </div>
+
+        <div class="tile">
+          <div class="topline">
+            <h3>Launch geometry that operators trust</h3>
+            <span class="pill">Ops</span>
+          </div>
+          <p>Simple visuals and calculations (prop/dive/run-in) that match what happens on deck.</p>
+          <div class="links">
+            <a class="link" href="#">Coming soon</a>
+          </div>
+        </div>
+
+        <div class="tile">
+          <div class="topline">
+            <h3>QA checks that catch issues early</h3>
+            <span class="pill">QA</span>
+          </div>
+          <p>Practical checks for headings, gaps, overlaps, timing, and file consistency.</p>
+          <div class="links">
+            <a class="link" href="#">Coming soon</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="apps">
+      <div class="section-head">
+        <h2>Apps</h2>
+        <p>Showcase a few key applications here. Replace placeholders with real links/screenshots later.</p>
+      </div>
+
+      <div class="grid">
+        <div class="tile">
+          <div class="topline">
+            <h3>Mission Explorer</h3>
+            <span class="pill">Desktop</span>
+          </div>
+          <p>Browse missions, plot tracks, read logs, export DXF/Excel, and review execution quickly.</p>
+          <div class="links">
+            <a class="link" href="#contact">Ask for build</a>
+          </div>
+        </div>
+
+        <div class="tile">
+          <div class="topline">
+            <h3>Mission Planner</h3>
+            <span class="pill">QGIS plugin</span>
+          </div>
+          <p>Survey line generation, turns, offsets, and exports built around real HUGIN workflows.</p>
+          <div class="links">
+            <a class="link" href="#contact">See workflow</a>
+          </div>
+        </div>
+
+        <div class="tile">
+          <div class="topline">
+            <h3>Utilities</h3>
+            <span class="pill">Batch tools</span>
+          </div>
+          <p>Image processing, file staging, quick converters, and lightweight QA scripts.</p>
+          <div class="links">
+            <a class="link" href="#contact">Discuss needs</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="section-head">
+        <h2>Contact</h2>
+        <p>Replace the placeholders below with your actual details once the domain is live.</p>
+      </div>
+
+      <div class="card" style="padding:18px;">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+          <div class="mini">
+            <h3>Email</h3>
+            <p><code>hello@crbsubsea.com</code> (placeholder)</p>
+          </div>
+          <div class="mini">
+            <h3>Links</h3>
+            <p>
+              <code>GitHub</code> • <code>LinkedIn</code> • <code>Downloads</code> (add later)
+            </p>
+          </div>
+        </div>
+
+        <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="btn primary" href="mailto:hello@crbsubsea.com">Email me</a>
+          <a class="btn" href="#top">Back to top</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>© <span id="y"></span> CRB Subsea. All rights reserved.</div>
+      <div style="font-family:var(--mono);">Built for dark-theme tools & offshore reality.</div>
+    </footer>
+
+  </div>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

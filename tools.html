@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="CRB Subsea — in-house tools for AUV operations, mission planning, QA, and subsea delivery." />
+  <title>CRB Subsea — Tools</title>
+
+  <style>
+    :root{
+      /* Depth background */
+      --bg0:#040a08;      /* deep green-black */
+      --bg1:#061612;      /* abyssal green */
+      --bg2:#0a2a22;      /* deep teal-green */
+
+      /* Panels */
+      --panel:rgba(8,24,20,.82);
+      --panel2:rgba(6,18,15,.82);
+
+      /* Text */
+      --text:#e9f5f1;
+      --muted:#b4cec4;
+
+      /* Brand (logo-driven) */
+      --brand:#78c24a;    /* logo green */
+      --brand2:#5aa83a;   /* darker companion */
+
+      --line:rgba(255,255,255,.10);
+      --radius:18px;
+      --max:1100px;
+      --sans: system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(1100px 600px at 20% -10%, rgba(120,194,74,.18), transparent 60%),
+        radial-gradient(900px 500px at 85% 0%, rgba(90,168,58,.14), transparent 55%),
+        linear-gradient(180deg,var(--bg0), var(--bg1) 35%, var(--bg2) 70%, var(--bg0));
+      overflow-x:hidden;
+    }
+
+    a{color:inherit;text-decoration:none}
+    .wrap{max-width:var(--max);margin:auto;padding:22px 18px 60px;position:relative;z-index:2}
+
+    /* Ocean atmosphere layers */
+    .ocean{position:fixed;inset:0;pointer-events:none;z-index:0;}
+    .ocean::before{
+      content:"";
+      position:absolute;inset:-20%;
+      background:
+        repeating-linear-gradient(115deg,
+          rgba(120,194,74,.14) 0px,
+          rgba(120,194,74,0) 60px,
+          rgba(120,194,74,0) 120px);
+      opacity:.22;
+      mix-blend-mode:screen;
+      transform:translateY(-6%) rotate(-2deg);
+      filter:blur(1px);
+      animation:rays 18s ease-in-out infinite alternate;
+    }
+    @keyframes rays{
+      0%{transform:translateY(-7%) translateX(-2%) rotate(-2deg);opacity:.18}
+      100%{transform:translateY(-2%) translateX(2%) rotate(-2deg);opacity:.26}
+    }
+    .ocean::after{
+      content:"";
+      position:absolute;inset:0;
+      background:
+        radial-gradient(closest-side at 20% 30%, rgba(120,194,74,.14), transparent 55%),
+        radial-gradient(closest-side at 80% 25%, rgba(90,168,58,.12), transparent 55%),
+        radial-gradient(closest-side at 45% 75%, rgba(120,220,255,.08), transparent 60%),
+        conic-gradient(from 180deg at 50% 50%,
+          rgba(255,255,255,.05),
+          rgba(255,255,255,0),
+          rgba(255,255,255,.04),
+          rgba(255,255,255,0),
+          rgba(255,255,255,.03));
+      opacity:.55;
+      filter:blur(10px) saturate(120%);
+      animation:caustics 14s linear infinite;
+      mix-blend-mode:overlay;
+    }
+    @keyframes caustics{
+      0%{transform:translate3d(-2%,0,0) scale(1.05) rotate(0deg)}
+      50%{transform:translate3d(2%,-1%,0) scale(1.08) rotate(6deg)}
+      100%{transform:translate3d(-2%,0,0) scale(1.05) rotate(12deg)}
+    }
+
+    .bubbles{
+      position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.5;
+      background:
+        radial-gradient(circle at 12% 92%, rgba(233,242,251,.18) 0 2px, transparent 3px),
+        radial-gradient(circle at 22% 105%, rgba(233,242,251,.14) 0 1.5px, transparent 3px),
+        radial-gradient(circle at 38% 98%, rgba(233,242,251,.12) 0 2px, transparent 3px),
+        radial-gradient(circle at 58% 110%, rgba(233,242,251,.10) 0 1.5px, transparent 3px),
+        radial-gradient(circle at 76% 95%, rgba(233,242,251,.14) 0 2px, transparent 3px),
+        radial-gradient(circle at 88% 108%, rgba(233,242,251,.10) 0 1.5px, transparent 3px);
+      animation:bubbles 9s ease-in-out infinite;
+      filter:blur(.2px);
+    }
+    @keyframes bubbles{
+      0%{transform:translateY(0)}
+      50%{transform:translateY(-28px)}
+      100%{transform:translateY(0)}
+    }
+
+    header{
+      width:100%;
+      position:sticky;
+      top:0;
+      z-index:10;
+      background:rgba(4,10,18,.62);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--line);
+    }
+    .header-inner{
+      max-width:var(--max);
+      margin:auto;
+      padding:12px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .brand{display:flex;gap:12px;align-items:center}
+    .brand img{
+      height:clamp(56px, 8vw, 110px);
+      width:auto;
+      max-width:100%;
+      display:block;
+    }
+
+    nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+    nav a{color:var(--muted);padding:6px 8px;border-radius:10px}
+    nav a:hover{color:var(--text);background:rgba(255,255,255,.04)}
+    nav a.active{color:var(--text);background:rgba(255,255,255,.06);border:1px solid var(--line)}
+
+    .btn{
+      padding:10px 14px;border-radius:14px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+    }
+    .btn.primary{
+      background:linear-gradient(180deg,var(--brand), var(--brand2));
+      color:#08110a;
+      font-weight:800;
+      border:none;
+      box-shadow:0 10px 26px rgba(120,194,74,.18);
+    }
+
+    .hero{
+      display:grid;grid-template-columns:1.2fr .8fr;
+      gap:22px;padding:42px 0 18px;
+    }
+
+    .card{
+      background:linear-gradient(180deg,var(--panel), var(--panel2));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:26px;
+      box-shadow:0 18px 55px rgba(0,0,0,.25);
+      position:relative;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute;inset:-1px;
+      background:radial-gradient(800px 220px at 20% 0%, rgba(68,211,199,.10), transparent 55%),
+                 radial-gradient(700px 200px at 85% 5%, rgba(121,227,166,.08), transparent 55%);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .card > *{position:relative;z-index:1}
+
+    h1{
+      font-size:clamp(34px,4.2vw,56px);
+      line-height:1.08;margin:10px 0 12px;
+      letter-spacing:.3px;
+    }
+    h2{font-size:18px;margin:0}
+    h3{font-size:15px;margin:0 0 8px}
+    p{color:var(--muted);line-height:1.65}
+
+    section{margin-top:34px}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+
+    .badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .badge{
+      font-family:var(--mono);
+      font-size:12px;padding:7px 10px;
+      border-radius:999px;border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+    }
+
+    .list{
+      margin:10px 0 0;
+      padding-left:18px;
+      color:var(--muted);
+      line-height:1.65;
+    }
+    .list li{margin:6px 0}
+
+    footer{
+      margin-top:38px;padding-top:16px;
+      border-top:1px solid var(--line);
+      font-size:13px;color:var(--muted);
+      display:flex;justify-content:space-between;flex-wrap:wrap;
+      gap:10px;
+    }
+
+    /* accessibility: reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      .ocean::before,.ocean::after,.bubbles{animation:none}
+    }
+
+    @media(max-width:900px){
+      .hero,.grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="ocean" aria-hidden="true"></div>
+  <div class="bubbles" aria-hidden="true"></div>
+
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <a href="index.html" aria-label="CRB Subsea home">
+          <img src="logo.png" alt="CRB logo">
+        </a>
+      </div>
+
+      <nav aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a class="active" href="tools.html">Tools</a>
+        <a href="index.html#contact" class="btn primary">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+
+    <main class="hero">
+      <div class="card">
+        <h1>In-house tools built for real offshore work.</h1>
+
+        <p>
+          Over the years I’ve developed a suite of focused tools to support
+          AUV mission planning, offshore execution, navigation review, and delivery.
+        </p>
+
+        <p>
+          These tools were built <strong>in-house</strong> to solve real operational problems —
+          streamlining workflows, reducing manual error, and improving clarity during
+          offshore campaigns.
+        </p>
+
+        <div class="badges">
+          <span class="badge">Mission planning</span>
+          <span class="badge">AUV navigation</span>
+          <span class="badge">QA &amp; delivery</span>
+          <span class="badge">Automation</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>How these tools are developed</h3>
+        <p>
+          The focus is practical: build small tools that remove friction from
+          everyday operations and improve confidence in delivered results.
+        </p>
+        <ul class="list">
+          <li>Built around offshore requirements and real workflows.</li>
+          <li>Designed to be maintainable and easy to use under time pressure.</li>
+          <li>Used to deepen capability across planning, analysis, and automation.</li>
+        </ul>
+      </div>
+    </main>
+
+    <section id="tools">
+      <h2>Selected tools</h2>
+
+      <div class="grid">
+        <div class="card">
+          <h3>Mission Explorer</h3>
+          <p>
+            Desktop application for reviewing AUV missions by bringing planned lines,
+            executed navigation, events, and logs into one interface.
+          </p>
+          <p>
+            Used for offshore QA, post-mission review, fast reporting, and export to
+            DXF and Excel.
+          </p>
+          <div class="badges">
+            <span class="badge">PyQt</span>
+            <span class="badge">Track review</span>
+            <span class="badge">Export</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>HUGIN Mission Planner (QGIS plugin)</h3>
+          <p>
+            Mission planning and line-generation plugin built directly inside QGIS for
+            spatial accuracy and flexibility.
+          </p>
+          <p>
+            Supports survey line generation, turn handling, ordering patterns, launch
+            point calculation, and mission export.
+          </p>
+          <div class="badges">
+            <span class="badge">QGIS</span>
+            <span class="badge">Line generation</span>
+            <span class="badge">Mission export</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Navigation &amp; Event Review Utilities</h3>
+          <p>
+            Lightweight tools for parsing and visualising navigation, CP events, and logs
+            to quickly answer operational questions.
+          </p>
+          <p>
+            Built to reduce reliance on vendor tooling and shorten turnaround time during
+            offshore troubleshooting and QA.
+          </p>
+          <div class="badges">
+            <span class="badge">Python</span>
+            <span class="badge">Log parsing</span>
+            <span class="badge">Operations support</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Mission &amp; Maintenance Tracker</h3>
+          <p>
+            Internal web application for logging missions, tracking component usage, recording
+            faults, and maintaining service history.
+          </p>
+          <p>
+            Improves traceability across campaigns: hours, serials, maintenance status, and
+            work completed.
+          </p>
+          <div class="badges">
+            <span class="badge">Flask</span>
+            <span class="badge">Asset tracking</span>
+            <span class="badge">Traceability</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Imagery &amp; Media Workflow Tools</h3>
+          <p>
+            Utilities for handling large still-image datasets (batch processing, overlays, and
+            organisation) to support fast review and delivery.
+          </p>
+          <p>
+            Built with performance in mind for high-volume offshore collections.
+          </p>
+          <div class="badges">
+            <span class="badge">Batch processing</span>
+            <span class="badge">QA support</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>3D Mission / Terrain Tools</h3>
+          <p>
+            Tools to combine mission lines with terrain models (DEM) for 3D-ready outputs and
+            better altitude/terrain awareness during planning.
+          </p>
+          <p>
+            Useful for visual validation and risk reduction in complex bathymetry.
+          </p>
+          <div class="badges">
+            <span class="badge">3D planning</span>
+            <span class="badge">DEM sampling</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="philosophy">
+      <h2>In-house capability, not off-the-shelf dependency</h2>
+      <div class="card">
+        <p>
+          All tools are designed and developed in-house as part of ongoing operational work,
+          not as standalone software products.
+        </p>
+        <p>
+          Development is driven by offshore requirements — reducing manual handling, improving
+          clarity during operations, and increasing confidence in delivered results.
+        </p>
+        <p>
+          Building these tools has been a deliberate way to strengthen technical capability
+          across mission planning, navigation analysis, automation, and data quality —
+          keeping solutions practical, maintainable, and aligned with how offshore work is
+          actually executed.
+        </p>
+      </div>
+    </section>
+
+    <footer>
+      <div>© <span id="y"></span> CRB Subsea</div>
+      <div style="font-family:var(--mono)">Grounded in real offshore operations</div>
+    </footer>
+
+  </div>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
